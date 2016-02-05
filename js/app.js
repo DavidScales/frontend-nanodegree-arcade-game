@@ -53,9 +53,11 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     // move right
     this.x += dt * this.speed;
-    // reset position on screen edge
+    // reset position and speed on screen edge
     if (this.x > TILE_WIDTH * NUM_TILES_WIDTH) {
         this.x = -TILE_WIDTH;
+        this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - BUG_OFFSET;
+        this.speed = Math.floor(Math.random() * BUG_SPEED_MODIFIER + 1) * BUG_BASE_SPEED;
     }
 };
 
