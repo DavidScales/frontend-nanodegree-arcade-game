@@ -8,7 +8,7 @@ var PLAYER_OFFSET = 25; // compensation for player graphic "floating" within pgn
 
 var BUG_ROWS_START = 1; // the row where bugs can start spawning
 var BUG_ROWS = 3; // the number of rows the bugs can spawn on
-var NUM_BUGS = 1; // how many bugs spawn
+var NUM_BUGS = 5; // how many bugs spawn
 var BUG_BASE_SPEED = 101; // pixels/second base speed of bugs (depends on graphic assets size)
 var BUG_SPEED_MODIFIER = 3; // max speed multiplier for bugs
 
@@ -42,7 +42,7 @@ var Enemy = function() {
     // set starting position and speed (semi-random)
     this.x = 0;
     this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - BUG_OFFSET;
-    this.speed = Math.floor(Math.random() * BUG_SPEED_MODIFIER + 1) * BUG_BASE_SPEED;
+    this.speed = Math.floor(Math.random() * BUG_SPEED_MODIFIER + 1) * BUG_BASE_SPEED + (Math.random() * BUG_BASE_SPEED / 2);
 };
 
 // Update the enemy's position, required method for game
@@ -57,7 +57,7 @@ Enemy.prototype.update = function(dt) {
     if (this.x > TILE_WIDTH * NUM_TILES_WIDTH) {
         this.x = -TILE_WIDTH;
         this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - BUG_OFFSET;
-        this.speed = Math.floor(Math.random() * BUG_SPEED_MODIFIER + 1) * BUG_BASE_SPEED;
+        this.speed = Math.floor(Math.random() * BUG_SPEED_MODIFIER + 1) * BUG_BASE_SPEED + (Math.random() * BUG_BASE_SPEED / 2);
     }
 };
 
