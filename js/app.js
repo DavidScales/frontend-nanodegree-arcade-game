@@ -12,6 +12,25 @@ var NUM_BUGS = 1; // how many bugs spawn
 var BUG_BASE_SPEED = 101; // pixels/second base speed of bugs (depends on graphic assets size)
 var BUG_SPEED_MODIFIER = 3; // max speed multiplier for bugs
 
+// Define function for checking all collisions, called in engine.js
+function checkCollisions() {
+
+    var playerLeft = player.leftSide();
+    var playerRight = player.rightSide();
+
+    allEnemies.forEach(function(enemy) {
+
+        if ( player.y + PLAYER_OFFSET == enemy.y + BUG_OFFSET ) {
+            if (playerLeft < enemy.rightSide() && playerLeft > enemy.leftSide()) {
+                player.reset();
+            }
+            else if (playerRight > enemy.leftSide() && playerRight < enemy.rightSide()) {
+                player.reset();
+            }
+        }
+    })
+}
+
 // Enemies our player must avoid
 var Enemy = function() {
     // Variables applied to each of our instances go here,
@@ -66,16 +85,24 @@ var Player = function() {
     // set sprite
     this.sprite = 'images/char-boy.png';
     // set initial position
-    this.x = Math.floor(NUM_TILES_WIDTH / 2) * TILE_WIDTH;
-    this.y = TILE_HEIGHT * (NUM_TILES_HEIGHT - 1) - PLAYER_OFFSET;
+    this.xOrigin = Math.floor(NUM_TILES_WIDTH / 2) * TILE_WIDTH;
+    this.yOrigin = TILE_HEIGHT * (NUM_TILES_HEIGHT - 1) - PLAYER_OFFSET;
+    this.x = this.xOrigin;
+    this.y = this.yOrigin;
 };
 
-// update player - currently handled by Player.prototype.handleInput
+// Update player - currently handled by Player.prototype.handleInput
 Player.prototype.update = function(dt) {
     ;
 };
 
-// handle user input to control player
+// Reset player position
+Player.prototype.reset = function() {
+    this.x = this.xOrigin;
+    this.y = this.yOrigin;
+};
+
+// Handle user input to control player
 Player.prototype.handleInput = function(input) {
     // for each each direction key, move player corresponding direction if new location is still on the map
     if (input == 'up' && this.y - TILE_HEIGHT > 0) {
@@ -92,7 +119,7 @@ Player.prototype.handleInput = function(input) {
     }
 };
 
-// draw player
+// Draw player
 Player.prototype.render = function() {
    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
