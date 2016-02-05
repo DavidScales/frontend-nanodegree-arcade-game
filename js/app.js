@@ -5,10 +5,11 @@ var NUM_TILES_HEIGHT = 6; // how many tiles tall the game map is (depends on eng
 
 var BUG_OFFSET = 25; // compensation for bug graphic "floating" within png file (depends on graphic assets size)
 var PLAYER_OFFSET = 25; // compensation for player graphic "floating" within pgn file (depends on graphic assets size)
+var GEM_OFFSET = 25; // compensation for gem graphic "floating" within pgn file (depends on graphic assets size)
 
 var BUG_ROWS_START = 1; // the row where bugs can start spawning
 var BUG_ROWS = 3; // the number of rows the bugs can spawn on
-var NUM_BUGS = 5; // how many bugs spawn
+var NUM_BUGS = 4; // how many bugs spawn
 var BUG_BASE_SPEED = 101; // pixels/second base speed of bugs (depends on graphic assets size)
 var BUG_SPEED_MODIFIER = 3; // max speed multiplier for bugs
 
@@ -19,8 +20,7 @@ function checkCollisions() {
     var playerRight = player.rightSide();
 
     allEnemies.forEach(function(enemy) {
-
-        if ( player.y + PLAYER_OFFSET == enemy.y + BUG_OFFSET ) {
+        if (player.y + PLAYER_OFFSET == enemy.y + BUG_OFFSET) {
             if (playerLeft < enemy.rightSide() && playerLeft > enemy.leftSide()) {
                 player.reset();
             }
@@ -29,7 +29,50 @@ function checkCollisions() {
             }
         }
     })
+
+    gems.forEach(function(gem) {
+        if (player.y + PLAYER_OFFSET === gem.y + GEM_OFFSET) {
+            if (player.x === gem.x) {
+                gem.remove();
+            }
+        }
+    });
 }
+
+// Gems the player must acquire
+var Gem = function(color) {
+    // Set sprite based on color, defaults to blue
+    if (color === 'orange') {
+        this.sprite = 'images/Gem Orange.png';
+    }
+    else if (color === 'green') {
+        this.sprite = 'images/Gem Green.png';
+    }
+    else {
+        this.sprite = 'images/Gem Blue.png';
+    }
+    // Set random positions (set within bug occupied rows only)
+    this.x = Math.floor(Math.random() * NUM_TILES_WIDTH) * TILE_WIDTH;
+    this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - GEM_OFFSET;
+}
+
+// Update gem, required method for game
+Gem.prototype.update = function() {
+    ;
+};
+
+// Draw gem
+Gem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+// Remove gems when collected by player
+Gem.prototype.remove = function() {
+    index = gems.indexOf(this);
+    if (index > -1) {
+        gems.splice(index,1);
+    }
+};
 
 // Enemies our player must avoid
 var Enemy = function() {
@@ -39,7 +82,7 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    // set starting position and speed (semi-random)
+    // Set starting position and speed (semi-random)
     this.x = 0;
     this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - BUG_OFFSET;
     this.speed = Math.floor(Math.random() * BUG_SPEED_MODIFIER + 1) * BUG_BASE_SPEED + (Math.random() * BUG_BASE_SPEED / 2);
@@ -53,7 +96,7 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     // move right
     this.x += dt * this.speed;
-    // reset position and speed on screen edge
+    // Reset position and speed on screen edge
     if (this.x > TILE_WIDTH * NUM_TILES_WIDTH) {
         this.x = -TILE_WIDTH;
         this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - BUG_OFFSET;
@@ -67,12 +110,6 @@ Enemy.prototype.render = function() {
 };
 
 // Calculate enemy "sides", where the graphic actually exists within the png file. For use with checkCollisions()
-Enemy.prototype.topSide = function() {
-    return this.y + 77;
-};
-Enemy.prototype.bottomSide = function() {
-    return this.y + 144;
-};
 Enemy.prototype.leftSide = function() {
     return this.x;
 };
@@ -93,7 +130,7 @@ var Player = function() {
     this.y = this.yOrigin;
 };
 
-// Update player - currently handled by Player.prototype.handleInput
+// Update player, required method for game (updating currently handled by Player.prototype.handleInput)
 Player.prototype.update = function(dt) {
     ;
 };
@@ -102,16 +139,17 @@ Player.prototype.update = function(dt) {
 Player.prototype.reset = function() {
     this.x = this.xOrigin;
     this.y = this.yOrigin;
+    populateGems();
 };
 
 // Handle user input to control player
 Player.prototype.handleInput = function(input) {
-    // for each each direction key, move player corresponding direction if new location is still on the map
+    // For each each direction key, move player corresponding direction if new location is still on the map
     if (input == 'up') {
         if (this.y - TILE_HEIGHT > 0) {
             this.y -= TILE_HEIGHT;
         }
-        // player reaches top of map
+        // Player reaches top of map
         else {
             this.reset();
         }
@@ -133,12 +171,6 @@ Player.prototype.render = function() {
 };
 
 // Calculate player "sides", where the graphic actually exists within the png file. For use with checkCollisions()
-Player.prototype.topSide = function() {
-    return this.y + 65;
-};
-Player.prototype.bottomSide = function() {
-    return this.y + 135;
-};
 Player.prototype.leftSide = function() {
     return this.x + 20;
 };
@@ -148,14 +180,24 @@ Player.prototype.rightSide = function() {
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
 var allEnemies = new Array();
 for (var i = 0; i < NUM_BUGS; i++) {
     enemy = new Enemy();
     allEnemies.push(enemy);
 }
-
+// Place the player object in a variable called player
 player = new Player();
+// Place gem objects in array called gems
+var gems = new Array();
+function populateGems() {
+    gems = [];
+    colors = ['orange', 'green', 'blue'];
+    colors.forEach(function(color) {
+        gem = new Gem(color);
+        gems.push(gem);
+    });
+}
+populateGems();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
