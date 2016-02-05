@@ -105,8 +105,14 @@ Player.prototype.reset = function() {
 // Handle user input to control player
 Player.prototype.handleInput = function(input) {
     // for each each direction key, move player corresponding direction if new location is still on the map
-    if (input == 'up' && this.y - TILE_HEIGHT > 0) {
-        this.y -= TILE_HEIGHT;
+    if (input == 'up') {
+        if (this.y - TILE_HEIGHT > 0) {
+            this.y -= TILE_HEIGHT;
+        }
+        // player reaches top of map
+        else {
+            this.reset();
+        }
     }
     else if (input == 'down' && this.y + TILE_HEIGHT < (NUM_TILES_HEIGHT - 1) * TILE_HEIGHT ) {
         this.y += TILE_HEIGHT;
