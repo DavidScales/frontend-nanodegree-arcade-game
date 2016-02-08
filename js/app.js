@@ -28,7 +28,7 @@ function checkCollisions() {
                 player.reset();
             }
         }
-    })
+    });
 
     gems.forEach(function(gem) {
         if (player.y + PLAYER_OFFSET === gem.y + GEM_OFFSET) {
@@ -54,11 +54,11 @@ var Gem = function(color) {
     // Set random positions (set within bug occupied rows only)
     this.x = Math.floor(Math.random() * NUM_TILES_WIDTH) * TILE_WIDTH;
     this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - GEM_OFFSET;
-}
+};
 
 // Update gem, required method for game
 Gem.prototype.update = function() {
-    ;
+
 };
 
 // Draw gem
@@ -68,7 +68,7 @@ Gem.prototype.render = function() {
 
 // Remove gems when collected by player
 Gem.prototype.remove = function() {
-    index = gems.indexOf(this);
+    var index = gems.indexOf(this);
     if (index > -1) {
         gems.splice(index,1);
     }
@@ -126,16 +126,17 @@ var Player = function() {
     // set initial position
     this.xOrigin = Math.floor(NUM_TILES_WIDTH / 2) * TILE_WIDTH;
     this.yOrigin = TILE_HEIGHT * (NUM_TILES_HEIGHT - 1) - PLAYER_OFFSET;
+    // set current position to initial position
     this.x = this.xOrigin;
     this.y = this.yOrigin;
 };
 
 // Update player, required method for game (updating currently handled by Player.prototype.handleInput)
 Player.prototype.update = function(dt) {
-    ;
+
 };
 
-// Reset player position
+// Reset player position and reset gems
 Player.prototype.reset = function() {
     this.x = this.xOrigin;
     this.y = this.yOrigin;
@@ -149,7 +150,7 @@ Player.prototype.handleInput = function(input) {
         if (this.y - TILE_HEIGHT > 0) {
             this.y -= TILE_HEIGHT;
         }
-        // Player reaches top of map
+        // Reset game if player jumps into water at top of map
         else {
             this.reset();
         }
@@ -180,20 +181,21 @@ Player.prototype.rightSide = function() {
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
-var allEnemies = new Array();
+var allEnemies = [];
 for (var i = 0; i < NUM_BUGS; i++) {
-    enemy = new Enemy();
+    var enemy = new Enemy();
     allEnemies.push(enemy);
 }
 // Place the player object in a variable called player
-player = new Player();
+var player = new Player();
 // Place gem objects in array called gems
-var gems = new Array();
+var gems = [];
+// populate gems
 function populateGems() {
     gems = [];
-    colors = ['orange', 'green', 'blue'];
+    var colors = ['orange', 'green', 'blue'];
     colors.forEach(function(color) {
-        gem = new Gem(color);
+        var gem = new Gem(color);
         gems.push(gem);
     });
 }
