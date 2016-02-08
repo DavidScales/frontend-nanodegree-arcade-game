@@ -126,6 +126,7 @@ var Player = function() {
     // set initial position
     this.xOrigin = Math.floor(NUM_TILES_WIDTH / 2) * TILE_WIDTH;
     this.yOrigin = TILE_HEIGHT * (NUM_TILES_HEIGHT - 1) - PLAYER_OFFSET;
+    // set current position to initial position
     this.x = this.xOrigin;
     this.y = this.yOrigin;
 };
@@ -135,7 +136,7 @@ Player.prototype.update = function(dt) {
     ;
 };
 
-// Reset player position
+// Reset player position and reset gems
 Player.prototype.reset = function() {
     this.x = this.xOrigin;
     this.y = this.yOrigin;
@@ -149,7 +150,7 @@ Player.prototype.handleInput = function(input) {
         if (this.y - TILE_HEIGHT > 0) {
             this.y -= TILE_HEIGHT;
         }
-        // Player reaches top of map
+        // Reset game if player jumps into water at top of map
         else {
             this.reset();
         }
@@ -189,6 +190,7 @@ for (var i = 0; i < NUM_BUGS; i++) {
 player = new Player();
 // Place gem objects in array called gems
 var gems = new Array();
+// populate gems
 function populateGems() {
     gems = [];
     colors = ['orange', 'green', 'blue'];
