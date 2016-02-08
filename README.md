@@ -1,6 +1,11 @@
-frontend-nanodegree-arcade-game
-===============================
+# Frogger clone
+A simplified clone of the classic game Frogger, written in JavaScript and using HTML5's canvas. This project is part of Udacity's Front-End Nanodegree.
 
-Students should use this [rubric](https://www.udacity.com/course/viewer/#!/c-nd001/l-2696458597/m-2687128535) for self-checking their submission.
+## Playing the Game
+You can [play the game](http://davidscales.github.io/frontend-nanodegree-arcade-game/) directly (easiest) or you can clone the repository, and then open index.html with your browser.
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+### Game Objective and Controls
+The goal is to collect all of the gems on the map, without being attacked by the giant bugs. If the bugs touch you, or you jump into the water, the game will be reset. Use the arrow keys to move your character.
+
+## License
+[MIT License](http://opensource.org/licenses/MIT) - Copyright (c) 2016 David Scales
