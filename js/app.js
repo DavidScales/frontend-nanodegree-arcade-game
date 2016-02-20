@@ -18,8 +18,8 @@ var PLAYER_OFFSET = 12; // compensation for player graphic "floating" within pgn
 var GEM_OFFSET = 12; // compensation for gem graphic "floating" within pgn file (depends on graphic assets size)
 
 var BUG_ROWS_START = 1; // the row where bugs can start spawning
-var BUG_ROWS = 3; // the number of rows the bugs can spawn on
-var NUM_BUGS = 4; // how many bugs spawn
+var BUG_ROWS = 10; // the number of rows the bugs can spawn on
+var NUM_BUGS = 10; // how many bugs spawn
 var BUG_BASE_SPEED = COLWIDTH; // pixels/second base speed of bugs (depends on graphic assets size)
 var BUG_SPEED_MODIFIER = 3; // max speed multiplier for bugs
 
