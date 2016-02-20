@@ -1,16 +1,26 @@
-var TILE_HEIGHT = 83; // height of tile's visible surface (depends on graphic assets size)
-var TILE_WIDTH = 101; // width of tile (depends on graphic assets size)
-var NUM_TILES_WIDTH = 5; // how many tiles wide the game map is (depends on engine.js)
-var NUM_TILES_HEIGHT = 6; // how many tiles tall the game map is (depends on engine.js)
+var NUMROWS = 12; // how many tiles tall the game map is (depends on engine.js)
+var NUMCOLS = 10; // how many tiles wide the game map is (depends on engine.js)
+var COLWIDTH = 50; // width of tile (depends on graphic assets size)
+var ROWHEIGHT = 41; // height of tile's visible surface (depends on graphic assets size)
 
-var BUG_OFFSET = 25; // compensation for bug graphic "floating" within png file (depends on graphic assets size)
-var PLAYER_OFFSET = 25; // compensation for player graphic "floating" within pgn file (depends on graphic assets size)
-var GEM_OFFSET = 25; // compensation for gem graphic "floating" within pgn file (depends on graphic assets size)
+/* This object defines the publicly accessible constants available by creating a global Constants object.
+ * To be used in engine.js for world build.
+ */
+window.Constants = {
+    NUMROWS: NUMROWS,
+    NUMCOLS: NUMCOLS,
+    COLWIDTH: COLWIDTH,
+    ROWHEIGHT: ROWHEIGHT
+};
+
+var BUG_OFFSET = 12; // compensation for bug graphic "floating" within png file (depends on graphic assets size)
+var PLAYER_OFFSET = 12; // compensation for player graphic "floating" within pgn file (depends on graphic assets size)
+var GEM_OFFSET = 12; // compensation for gem graphic "floating" within pgn file (depends on graphic assets size)
 
 var BUG_ROWS_START = 1; // the row where bugs can start spawning
 var BUG_ROWS = 3; // the number of rows the bugs can spawn on
 var NUM_BUGS = 4; // how many bugs spawn
-var BUG_BASE_SPEED = 101; // pixels/second base speed of bugs (depends on graphic assets size)
+var BUG_BASE_SPEED = COLWIDTH; // pixels/second base speed of bugs (depends on graphic assets size)
 var BUG_SPEED_MODIFIER = 3; // max speed multiplier for bugs
 
 // Define function for checking all collisions, called in engine.js
@@ -52,8 +62,8 @@ var Gem = function(color) {
         this.sprite = 'images/Gem Blue.png';
     }
     // Set random positions (set within bug occupied rows only)
-    this.x = Math.floor(Math.random() * NUM_TILES_WIDTH) * TILE_WIDTH;
-    this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - GEM_OFFSET;
+    this.x = Math.floor(Math.random() * NUMCOLS) * COLWIDTH;
+    this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * ROWHEIGHT - GEM_OFFSET;
 };
 
 // Update gem, required method for game
@@ -84,7 +94,7 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     // Set starting position and speed (semi-random)
     this.x = 0;
-    this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - BUG_OFFSET;
+    this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * ROWHEIGHT - BUG_OFFSET;
     this.speed = Math.floor(Math.random() * BUG_SPEED_MODIFIER + 1) * BUG_BASE_SPEED + (Math.random() * BUG_BASE_SPEED / 2);
 };
 
@@ -97,9 +107,9 @@ Enemy.prototype.update = function(dt) {
     // move right
     this.x += dt * this.speed;
     // Reset position and speed on screen edge
-    if (this.x > TILE_WIDTH * NUM_TILES_WIDTH) {
-        this.x = -TILE_WIDTH;
-        this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * TILE_HEIGHT - BUG_OFFSET;
+    if (this.x > COLWIDTH * NUMCOLS) {
+        this.x = -COLWIDTH;
+        this.y = Math.floor(Math.random() * BUG_ROWS + BUG_ROWS_START) * ROWHEIGHT - BUG_OFFSET;
         this.speed = Math.floor(Math.random() * BUG_SPEED_MODIFIER + 1) * BUG_BASE_SPEED + (Math.random() * BUG_BASE_SPEED / 2);
     }
 };
@@ -114,7 +124,7 @@ Enemy.prototype.leftSide = function() {
     return this.x;
 };
 Enemy.prototype.rightSide = function() {
-    return this.x + 97;
+    return this.x + COLWIDTH;
 };
 
 // Now write your own player class
@@ -124,8 +134,8 @@ var Player = function() {
     // set sprite
     this.sprite = 'images/char-boy.png';
     // set initial position
-    this.xOrigin = Math.floor(NUM_TILES_WIDTH / 2) * TILE_WIDTH;
-    this.yOrigin = TILE_HEIGHT * (NUM_TILES_HEIGHT - 1) - PLAYER_OFFSET;
+    this.xOrigin = Math.floor(NUMCOLS / 2) * COLWIDTH;
+    this.yOrigin = ROWHEIGHT * (NUMROWS - 1) - PLAYER_OFFSET;
     // set current position to initial position
     this.x = this.xOrigin;
     this.y = this.yOrigin;
@@ -147,22 +157,22 @@ Player.prototype.reset = function() {
 Player.prototype.handleInput = function(input) {
     // For each each direction key, move player corresponding direction if new location is still on the map
     if (input == 'up') {
-        if (this.y - TILE_HEIGHT > 0) {
-            this.y -= TILE_HEIGHT;
+        if (this.y - ROWHEIGHT > 0) {
+            this.y -= ROWHEIGHT;
         }
         // Reset game if player jumps into water at top of map
         else {
             this.reset();
         }
     }
-    else if (input == 'down' && this.y + TILE_HEIGHT < (NUM_TILES_HEIGHT - 1) * TILE_HEIGHT ) {
-        this.y += TILE_HEIGHT;
+    else if (input == 'down' && this.y + ROWHEIGHT < (NUMROWS - 1) * ROWHEIGHT ) {
+        this.y += ROWHEIGHT;
     }
-    else if (input == 'right' && this.x + TILE_WIDTH < NUM_TILES_WIDTH * TILE_WIDTH) {
-        this.x += TILE_WIDTH;
+    else if (input == 'right' && this.x + COLWIDTH < NUMCOLS * COLWIDTH) {
+        this.x += COLWIDTH;
     }
-    else if (input == 'left' && this.x - TILE_WIDTH > -TILE_WIDTH) {
-        this.x -= TILE_WIDTH;
+    else if (input == 'left' && this.x - COLWIDTH > -COLWIDTH) {
+        this.x -= COLWIDTH;
     }
 };
 
@@ -173,10 +183,10 @@ Player.prototype.render = function() {
 
 // Calculate player "sides", where the graphic actually exists within the png file. For use with checkCollisions()
 Player.prototype.leftSide = function() {
-    return this.x + 20;
+    return this.x + COLWIDTH * 0.2; // 20% of horizontal space on player image sides are empty space
 };
 Player.prototype.rightSide = function() {
-    return this.x + 84;
+    return this.x + COLWIDTH * 0.8; // 20% of horizontal space on player image sides are empty space
 };
 
 // Now instantiate your objects.

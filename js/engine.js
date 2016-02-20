@@ -14,6 +14,13 @@
  * a little simpler to work with.
  */
 
+var ROWHEIGHT = Constants.ROWHEIGHT; // height of tile's visible surface (depends on graphic assets size)
+var COLWIDTH = Constants.COLWIDTH; // width of tile (depends on graphic assets size)
+var NUMCOLS = Constants.NUMCOLS; // how many tiles wide the game map is (depends on engine.js)
+var NUMROWS = Constants.NUMROWS; // how many tiles tall the game map is (depends on engine.js)
+
+var row, col;
+
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -25,7 +32,7 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 505;
+    canvas.width = 500;
     canvas.height = 606;
     doc.body.appendChild(canvas);
 
@@ -114,22 +121,25 @@ var Engine = (function(global) {
          */
         var rowImages = [
                 'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
-            ],
-            numRows = 6,
-            numCols = 5,
-            row, col;
+                'images/stone-block.png',   // Row 1 of 10 of stone
+                'images/stone-block.png',   // Row 2 of 10 of stone
+                'images/stone-block.png',   // Row 3 of 10 of stone
+                'images/stone-block.png',   // Row 4 of 10 of stone
+                'images/stone-block.png',   // Row 5 of 10 of stone
+                'images/stone-block.png',   // Row 6 of 10 of stone
+                'images/stone-block.png',   // Row 7 of 10 of stone
+                'images/stone-block.png',   // Row 8 of 10 of stone
+                'images/stone-block.png',   // Row 9 of 10 of stone
+                'images/stone-block.png',   // Row 10 of 10 of stone
+                'images/grass-block.png'    // Row 1 of 1 of grass
+            ];
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
          */
-        for (row = 0; row < numRows; row++) {
-            for (col = 0; col < numCols; col++) {
+        for (row = 0; row < NUMROWS; row++) {
+            for (col = 0; col < NUMCOLS; col++) {
                 /* The drawImage function of the canvas' context element
                  * requires 3 parameters: the image to draw, the x coordinate
                  * to start drawing and the y coordinate to start drawing.
@@ -137,7 +147,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), col * COLWIDTH, row * ROWHEIGHT);
             }
         }
 
